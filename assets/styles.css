@@ -98,7 +98,10 @@ ul,ol{margin:0 0 15px 22px;max-width:760px}
 li{margin-bottom:8px}
 
 .prose h2{margin-top:38px}
-.prose h2:first-of-type{margin-top:0}
+/* Reset the leading gap only when the heading genuinely starts the page.
+   `:first-of-type` was wrong: on Contact the first h2 follows the email card,
+   so it matched and stripped the margin that separates them. */
+.prose h2:first-child{margin-top:0}
 .meta{color:var(--muted);font-size:14px;margin-bottom:32px}
 .small{font-size:14px;color:var(--muted)}
 
@@ -134,7 +137,10 @@ li{margin-bottom:8px}
 }
 .contact-card h3{margin-top:0;font-size:15px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
 .contact-card p{margin-bottom:6px;font-size:16px;color:var(--ink);word-break:break-word}
-.contact-card.solo{max-width:520px;margin-bottom:44px;padding:28px}
+/* A bordered block needs more trailing space than a paragraph to read as an
+   equal break — its hard bottom edge sits tight, where text has descender slack.
+   Note this collapses with the following h2's margin-top, so it must exceed it. */
+.contact-card.solo{max-width:520px;margin-bottom:64px;padding:28px}
 .contact-email{font-size:19px;font-weight:600;margin:10px 0 12px}
 .contact-email a{word-break:break-word}
 
