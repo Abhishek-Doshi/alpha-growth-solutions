@@ -19,7 +19,7 @@ BUSINESS = {
     "price":       "499",
     "checkout":    "#",          # Razorpay Payment Page link once you have it
     "hours":       "Monday to Saturday, 10:00 to 18:00 IST",
-    "response":    "within 24 hours",
+    "response":    "within 2 to 3 business days",
 }
 
 NAV = [
@@ -283,10 +283,14 @@ PAGES["delivery.html"] = ("Delivery Policy",
     ("If you do not receive it", f"""<p>If your access email has not arrived, please check your spam
        and promotions folders first, as automated emails are sometimes filtered there.</p>
        <p>If you still cannot find it, email <a href="mailto:{B['email']}">{B['email']}</a> from the
-       address used at checkout and we will resend your access {B['response']}.</p>"""),
+       address used at checkout and we will resend your access {B['response']}.</p>
+       <p>Where we have had to resend, your 24-hour access window runs from the moment working
+       access reaches you &mdash; not from the time of your original purchase. You are never
+       penalised for a delivery problem on our side.</p>"""),
     ("Access window", """<p>The access links inside the product are guaranteed to work for
-       <strong>24 hours from the time of purchase</strong>. Within that window you should save every
-       item to your own account or device.</p>
+       <strong>24 hours from the time of purchase</strong>, or from the moment working access
+       reaches you if we have had to resend it. Within that window you should save every item to
+       your own account or device.</p>
        <p>Anything you have saved or copied within that window is yours to keep and use permanently.
        Because the underlying files are hosted on third-party platforms, we cannot guarantee that the
        links will remain available beyond the first 24 hours. This is stated clearly inside the
