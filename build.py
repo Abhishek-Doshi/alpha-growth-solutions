@@ -5,7 +5,7 @@ Static site generator for Alpha Growth Solutions.
 Edit BUSINESS below, then run:  python3 build.py
 Regenerates every .html page from one source of truth.
 """
-import os, datetime
+import os
 
 # ---------------------------------------------------------------------------
 # THE ONLY BLOCK YOU NEED TO EDIT
@@ -14,18 +14,13 @@ import os, datetime
 BUSINESS = {
     "name":        "Alpha Growth Solutions",
     "tagline":     "Digital toolkits for independent creators and small businesses.",
-    "email":       "[[SUPPORT_EMAIL]]",
-    "phone":       "[[PHONE_NUMBER]]",
-    "address":     "[[BUSINESS_ADDRESS]]",
-    "city":        "[[CITY]]",
+    "email":       "alphagrowthsolutions.biz@gmail.com",
     "product":     "The Faceless Creator Kit",
     "price":       "499",
     "checkout":    "#",          # Razorpay Payment Page link once you have it
     "hours":       "Monday to Saturday, 10:00 to 18:00 IST",
     "response":    "within 24 hours",
 }
-
-UPDATED = datetime.date(2026, 7, 26).strftime("%d %B %Y")
 
 NAV = [
     ("index.html",    "Home"),
@@ -77,15 +72,12 @@ LAYOUT = """<!doctype html>
       <div>
         <h4>Contact</h4>
         <p class="footer-text">
-          <a href="mailto:{email}">{email}</a><br>
-          {phone}<br><br>
-          {address}
+          <a href="mailto:{email}">{email}</a>
         </p>
       </div>
     </div>
     <div class="footer-bar">
       <span>&copy; {year} {name}. All rights reserved.</span>
-      <span>Last updated {updated}</span>
     </div>
   </div>
 </footer>
@@ -109,7 +101,6 @@ def policy_page(title, sub, sections):
         blocks.append(f"<h2>{h}</h2>\n{body}")
     return page_hero(title, sub) + f"""
 <main class="wrap prose">
-<p class="meta">Last updated: {UPDATED}</p>
 {chr(10).join(blocks)}
 </main>"""
 
@@ -206,8 +197,8 @@ PAGES["about.html"] = ("About Us",
 
 <h2>Contact</h2>
 <p>For any question about our products, an order, or these policies, write to
-   <a href="mailto:{B['email']}">{B['email']}</a>. Our full contact details and registered address
-   are listed on the <a href="contact.html">Contact page</a>.</p>
+   <a href="mailto:{B['email']}">{B['email']}</a>. Our contact details and support hours are listed
+   on the <a href="contact.html">Contact page</a>.</p>
 </main>""")
 
 # ------------------------------ PRICING ------------------------------------
@@ -257,21 +248,10 @@ PAGES["contact.html"] = ("Contact Us",
   f"Contact {B['name']} &mdash; email, address and support hours.",
   page_hero("Contact Us", "We reply to every message. Email is the fastest way to reach us.") + f"""
 <main class="wrap prose">
-<div class="contact-grid">
-  <div class="contact-card">
-    <h3>Email</h3>
-    <p><a href="mailto:{B['email']}">{B['email']}</a></p>
-    <p class="small">We respond {B['response']}.</p>
-  </div>
-  <div class="contact-card">
-    <h3>Phone</h3>
-    <p>{B['phone']}</p>
-    <p class="small">{B['hours']}</p>
-  </div>
-  <div class="contact-card">
-    <h3>Address</h3>
-    <p>{B['address']}</p>
-  </div>
+<div class="contact-card solo">
+  <h3>Email us</h3>
+  <p class="contact-email"><a href="mailto:{B['email']}">{B['email']}</a></p>
+  <p class="small">We respond {B['response']}, {B['hours']}.</p>
 </div>
 
 <h2>Support hours</h2>
@@ -401,9 +381,9 @@ PAGES["terms.html"] = ("Terms &amp; Conditions",
     ("Changes to these terms", """<p>We may update these terms from time to time. The version
        published on this page at the time of your purchase is the version that applies to that
        purchase. The date of the most recent update is shown at the top of this page.</p>"""),
-    ("Governing law", f"""<p>These terms are governed by the laws of India. Any dispute arising out
-       of or in connection with them shall be subject to the exclusive jurisdiction of the courts of
-       {B['city']}, India.</p>"""),
+    ("Governing law", f"""<p>These terms are governed by the laws of India, and any dispute arising
+       out of or in connection with them shall be subject to the exclusive jurisdiction of the
+       courts of India.</p>"""),
     ("Contact", f"""<p>Questions about these terms can be sent to
        <a href="mailto:{B['email']}">{B['email']}</a>.</p>"""),
   ]))
@@ -458,8 +438,7 @@ PAGES["privacy.html"] = ("Privacy Policy",
        version is always published on this page, with the date of the last update shown at the
        top.</p>"""),
     ("Contact", f"""<p>Questions about privacy or your data can be sent to
-       <a href="mailto:{B['email']}">{B['email']}</a>, or by post to the address on our
-       <a href="contact.html">Contact page</a>.</p>"""),
+       <a href="mailto:{B['email']}">{B['email']}</a>.</p>"""),
   ]))
 
 
@@ -481,8 +460,7 @@ def build():
             nav=link_list(NAV, filename),
             footer_nav=link_list(NAV, filename),
             footer_policies=link_list(FOOTER_POLICIES, filename),
-            tagline=B["tagline"], email=B["email"], phone=B["phone"],
-            address=B["address"], year=2026, updated=UPDATED,
+            tagline=B["tagline"], email=B["email"], year=2026,
         )
         with open(os.path.join(here, filename), "w") as f:
             f.write(html)

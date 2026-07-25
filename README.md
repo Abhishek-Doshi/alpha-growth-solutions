@@ -31,17 +31,18 @@ Commit and push; GitHub Pages redeploys automatically.
 
 ## Before submitting for verification
 
-Replace every remaining placeholder. Check with:
+- [ ] Set `checkout` in `build.py` to the live Razorpay Payment Page URL (currently `#`)
+- [ ] Confirm `alphagrowthsolutions.biz@gmail.com` is monitored — reviewers may email it
+- [ ] Consider a custom domain; a `github.io` subdomain is an easy reason to be rejected
+
+Sanity check for unfilled placeholders before any submission:
 
 ```
 grep -o '\[\[[A-Z_]*\]\]' *.html | sort -u
 ```
 
-Required:
+## Notes
 
-- `[[SUPPORT_EMAIL]]` — a real, monitored address
-- `[[PHONE_NUMBER]]` — a reachable number
-- `[[BUSINESS_ADDRESS]]` — must match KYC records
-- `[[CITY]]` — jurisdiction named in Terms
-
-Also set `checkout` in `build.py` to the live payment page URL once it exists.
+Contact is email-only by choice — no phone number or postal address is published.
+Reviewers sometimes expect one of those on the Contact page, so if the account is
+rejected on contactability, adding a phone number is the first thing to try.

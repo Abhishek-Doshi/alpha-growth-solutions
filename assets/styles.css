@@ -134,6 +134,9 @@ li{margin-bottom:8px}
 }
 .contact-card h3{margin-top:0;font-size:15px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
 .contact-card p{margin-bottom:6px;font-size:16px;color:var(--ink);word-break:break-word}
+.contact-card.solo{max-width:520px;margin-bottom:44px;padding:28px}
+.contact-email{font-size:19px;font-weight:600;margin:10px 0 12px}
+.contact-email a{word-break:break-word}
 
 /* ---------- footer ---------- */
 .site-footer{
