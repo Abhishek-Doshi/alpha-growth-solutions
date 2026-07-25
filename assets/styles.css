@@ -75,7 +75,13 @@ a:hover{text-decoration:underline}
 .btn:hover{background:var(--accent-dark);text-decoration:none}
 
 /* ---------- content ---------- */
+/* Every <main> also carries .wrap, and `.wrap{padding:0 24px}` is (0,1,0) while
+   a bare `main` is only (0,0,1) — so the shorthand there would flatten the
+   vertical padding to zero regardless of source order. The `main.wrap`
+   qualifier and longhand properties below are what keep the space under the
+   hero. Don't collapse this back into a bare `main { padding: ... }`. */
 main{padding:52px 0 72px}
+main.wrap{padding-top:52px;padding-bottom:72px}
 .band{margin-bottom:52px}
 .band:last-child{margin-bottom:0}
 
