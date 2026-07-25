@@ -1,0 +1,14 @@
+# never commit credentials
+.secrets/
+*.pat
+*.token
+.env
+.env.*
+
+# macOS
+.DS_Store
+
+# python
+__pycache__/
+*.pyc
+venv/
