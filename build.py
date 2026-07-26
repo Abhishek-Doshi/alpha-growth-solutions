@@ -91,8 +91,9 @@ LAYOUT = """<!doctype html>
 <body>
 <header class="site-header">
   <div class="wrap header-inner">
-    <a class="brand" href="index.html" aria-label="{name}">
+    <a class="brand" href="index.html">
       <span class="ags-badge">AGS</span>
+      <span class="brand-name">{name}</span>
     </a>
     <nav class="nav">{nav}</nav>
   </div>

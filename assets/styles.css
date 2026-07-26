@@ -111,6 +111,7 @@ strong{color:var(--ink-2);font-weight:650}
   height:34px;padding:0 12px;border-radius:9px;flex:0 0 auto;
 }
 .ags-badge.inv{background:#fff;color:var(--ink)}
+.brand-name{font-weight:750;font-size:16.5px;letter-spacing:-.022em;color:var(--ink)}
 
 .nav{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .nav a{
@@ -388,6 +389,8 @@ main.wrap{padding-top:80px;padding-bottom:92px}
   .header-inner{min-height:auto;padding:13px 0;gap:12px}
   .nav{gap:2px}
   .nav a{padding:7px 10px;font-size:14px}
+  .ags-badge{height:30px;padding:0 10px;font-size:15px}
+  .brand-name{font-size:15px}
   .cta{padding:44px 26px;margin-top:62px;border-radius:16px}
   .product-card .pc-head,.product-card .pc-body{padding-left:24px;padding-right:24px}
   .footer-grid{grid-template-columns:1fr;gap:30px}
