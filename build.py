@@ -5,7 +5,7 @@ Static site generator for Alpha Growth Solutions.
 Edit BUSINESS below, then run:  python3 build.py
 Regenerates every .html page from one source of truth.
 """
-import os
+import os, hashlib
 
 # ---------------------------------------------------------------------------
 # THE ONLY BLOCK YOU NEED TO EDIT
@@ -86,7 +86,7 @@ LAYOUT = """<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@700;800&display=swap">
-<link rel="stylesheet" href="assets/styles.css">
+<link rel="stylesheet" href="assets/styles.css?v={cssver}">
 </head>
 <body>
 <header class="site-header">
@@ -610,8 +610,17 @@ def link_list(items, current):
     return "\n        ".join(out)
 
 
+def asset_version(path):
+    """Short content hash. Appending it to the asset URL means a changed file is
+    always a new URL, so a browser can never serve a stale stylesheet against
+    freshly generated HTML."""
+    with open(path, "rb") as fh:
+        return hashlib.md5(fh.read()).hexdigest()[:8]
+
+
 def build():
     here = os.path.dirname(os.path.abspath(__file__))
+    cssver = asset_version(os.path.join(here, "assets", "styles.css"))
     os.makedirs(os.path.join(here, "assets"), exist_ok=True)
     for filename, (title, desc, body) in PAGES.items():
         html = LAYOUT.format(
@@ -620,7 +629,7 @@ def build():
             footer_nav=link_list(NAV, filename),
             footer_policies=link_list(FOOTER_POLICIES, filename),
             tagline=B["tagline"], email=B["email"], year=2026,
-            cta=(CTA_HTML if filename in CTA_PAGES else ""),
+            cta=(CTA_HTML if filename in CTA_PAGES else ""), cssver=cssver,
         )
         with open(os.path.join(here, filename), "w") as f:
             f.write(html)
