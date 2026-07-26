@@ -35,6 +35,43 @@ FOOTER_POLICIES = [
     ("privacy.html",  "Privacy Policy"),
 ]
 
+ICONS = {
+  "layers":  '<path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/>',
+  "quote":   '<path d="M3 21c3 0 7-1 7-8V5c0-1.25-.757-2-2-2H4c-1.25 0-2 .75-2 2v6c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1Z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2-2-2h-4c-1.25 0-2 .75-2 2v6c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1Z"/>',
+  "calendar":'<rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/>',
+  "book":    '<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/>',
+  "mail":    '<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+  "shield":  '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1Z"/><path d="m9 12 2 2 4-4"/>',
+  "bolt":    '<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z"/>',
+  "lock":    '<rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+}
+
+
+def icon(name, cls="icon-tile"):
+    return (f'<div class="{cls}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" '
+            f'stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">{ICONS[name]}</svg></div>')
+
+
+def check_svg():
+    return ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" '
+            'stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>')
+
+
+CTA_HTML = """
+<div class="wrap">
+  <section class="cta">
+    <h2>Ready to get started?</h2>
+    <p>One-time payment, instant digital delivery, and everything you need to start
+       publishing in your first week.</p>
+    <div class="btn-row">
+      <a class="btn btn-light" href="pricing.html">View pricing</a>
+    </div>
+  </section>
+</div>
+"""
+
+CTA_PAGES = {"index.html", "about.html", "pricing.html", "contact.html"}
+
 LAYOUT = """<!doctype html>
 <html lang="en">
 <head>
@@ -42,23 +79,34 @@ LAYOUT = """<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title} &middot; {name}</title>
 <meta name="description" content="{desc}">
+<meta name="theme-color" content="#2563eb">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
 <header class="site-header">
   <div class="wrap header-inner">
-    <a class="brand" href="index.html">{name}</a>
+    <a class="brand" href="index.html">
+      <span class="brand-mark"><span>A</span></span>
+      {name}
+    </a>
     <nav class="nav">{nav}</nav>
   </div>
 </header>
 
 {body}
+{cta}
 
 <footer class="site-footer">
   <div class="wrap">
     <div class="footer-grid">
       <div>
-        <div class="footer-brand">{name}</div>
+        <div class="footer-brand">
+          <span class="brand-mark"><span>A</span></span>
+          {name}
+        </div>
         <p class="footer-text">{tagline}</p>
       </div>
       <div>
@@ -78,6 +126,10 @@ LAYOUT = """<!doctype html>
     </div>
     <div class="footer-bar">
       <span>&copy; {year} {name}. All rights reserved.</span>
+      <span class="dot-row">
+        <span>Digital products</span>
+        <span>Made in India</span>
+      </span>
     </div>
   </div>
 </footer>
@@ -95,13 +147,29 @@ def page_hero(title, sub):
 </section>"""
 
 
+def slug(text):
+    import re as _re
+    t = _re.sub(r"&[a-z]+;", " ", text).lower()
+    return _re.sub(r"-+", "-", _re.sub(r"[^a-z0-9]+", "-", t)).strip("-")
+
+
 def policy_page(title, sub, sections):
-    blocks = []
+    blocks, toc = [], []
     for h, body in sections:
-        blocks.append(f"<h2>{h}</h2>\n{body}")
+        sid = slug(h)
+        blocks.append(f'<h2 id="{sid}">{h}</h2>\n{body}')
+        toc.append(f'<a href="#{sid}">{h}</a>')
     return page_hero(title, sub) + f"""
-<main class="wrap prose">
+<main class="wrap">
+  <div class="prose-layout">
+    <aside class="toc">
+      <h4>On this page</h4>
+      {chr(10)          .join(toc)}
+    </aside>
+    <div class="prose">
 {chr(10).join(blocks)}
+    </div>
+  </div>
 </main>"""
 
 
@@ -117,54 +185,124 @@ PAGES["index.html"] = ("Home",
   f"""<section class="hero hero-lg">
   <div class="wrap">
     <p class="eyebrow">Digital Products</p>
-    <h1>{B['name']}</h1>
+    <h1>Ready-to-use toolkits for <span class="gradient-text">people who publish</span></h1>
     <p class="hero-sub">{B['tagline']}</p>
-    <a class="btn" href="pricing.html">View pricing</a>
+    <div class="btn-row">
+      <a class="btn" href="pricing.html">View pricing</a>
+      <a class="btn btn-ghost" href="about.html">About us</a>
+    </div>
+    <div class="hero-badges">
+      <span class="pill">{check_svg()} Instant digital delivery</span>
+      <span class="pill">{check_svg()} One-time payment</span>
+      <span class="pill">{check_svg()} No subscription</span>
+    </div>
   </div>
 </section>
 
 <main class="wrap">
   <section class="band">
-    <h2>What we do</h2>
+    <div class="band-head">
+      <p class="eyebrow">What we do</p>
+      <h2>Practical tools, not theory</h2>
+    </div>
     <p>{B['name']} is an Indian digital products business. We build and sell ready-to-use content
        toolkits &mdash; editable templates, written copy libraries, planners and step-by-step guides
        &mdash; for people who create content or market a small business online.</p>
     <p>Everything we sell is delivered digitally. There are no physical goods, and nothing is
        shipped.</p>
-  </section>
 
-  <section class="band">
-    <h2>Our products</h2>
-    <div class="card">
-      <h3>{B['product']}</h3>
-      <p>A complete system for producing short-form video content without appearing on camera.
-         It includes editable video templates, a library of opening lines, a 90-day content
-         calendar, and written guides covering production, growth and monetisation.</p>
-      <ul>
-        <li>Editable design templates delivered as hosted links</li>
-        <li>A written hook and script library</li>
-        <li>Planning documents and step-by-step guides</li>
-        <li>Delivered instantly by email after payment</li>
-      </ul>
-      <p class="price">{P} <span>one-time</span></p>
-      <a class="btn" href="pricing.html">See what's included</a>
+    <div class="grid grid-3" style="margin-top:34px">
+      <div class="card">
+        {icon('layers')}
+        <h3>Editable templates</h3>
+        <p>Design files you duplicate and adapt in minutes, in a free browser-based editor.</p>
+      </div>
+      <div class="card">
+        {icon('quote')}
+        <h3>Written copy libraries</h3>
+        <p>Opening lines and script structures, ready to adapt to whatever you publish about.</p>
+      </div>
+      <div class="card">
+        {icon('calendar')}
+        <h3>Planners and guides</h3>
+        <p>A content calendar and step-by-step walkthroughs so you always know what comes next.</p>
+      </div>
     </div>
   </section>
 
   <section class="band">
-    <h2>How buying works</h2>
-    <ol class="steps">
-      <li><strong>Pay online.</strong> Payments are processed by our payment gateway partner. We never see or store your card or UPI details.</li>
-      <li><strong>Receive access immediately.</strong> A confirmation email with your access document is sent to the address used at checkout.</li>
-      <li><strong>Save your files.</strong> Access links are guaranteed for 24 hours &mdash; copy everything to your own account within that window and it is yours permanently.</li>
-    </ol>
-    <p>Full details are in our <a href="delivery.html">Delivery Policy</a>.</p>
+    <div class="band-head">
+      <p class="eyebrow">Our products</p>
+      <h2>What we sell today</h2>
+    </div>
+    <div class="product-card">
+      <div class="pc-head">
+        <span class="tagline-badge">Flagship product</span>
+        <h3 style="font-size:23px">{B['product']}</h3>
+        <p style="margin:10px 0 0">A complete system for producing short-form video content without
+           appearing on camera. It includes editable video templates, a library of opening lines, a
+           90-day content calendar, and written guides covering production, growth and
+           monetisation.</p>
+      </div>
+      <div class="pc-body">
+        <ul class="check">
+          <li>Editable design templates delivered as hosted links</li>
+          <li>A written hook and script library</li>
+          <li>Planning documents and step-by-step guides</li>
+          <li>Delivered instantly by email after payment</li>
+        </ul>
+        <div class="price"><span class="amt">{P}</span> <span class="per">one-time</span></div>
+        <p class="price-note">No subscription. No recurring charge.</p>
+        <a class="btn" href="pricing.html">See what's included</a>
+      </div>
+    </div>
   </section>
+</main>
 
+<section class="section-alt">
+  <div class="wrap">
+    <div class="band-head">
+      <p class="eyebrow">How buying works</p>
+      <h2>Three steps, start to finish</h2>
+    </div>
+    <ol class="steps">
+      <li>
+        <h3>Pay online</h3>
+        <p>Payments are processed by our payment gateway partner. We never see or store your card
+           or UPI details.</p>
+      </li>
+      <li>
+        <h3>Receive access immediately</h3>
+        <p>A confirmation email with your access document is sent to the address used at
+           checkout.</p>
+      </li>
+      <li>
+        <h3>Save your files</h3>
+        <p>Access links are guaranteed for 24 hours &mdash; copy everything to your own account
+           within that window and it is yours permanently.</p>
+      </li>
+    </ol>
+    <p style="margin-top:26px">Full details are in our <a href="delivery.html">Delivery Policy</a>.</p>
+  </div>
+</section>
+
+<main class="wrap" style="padding-top:0">
   <section class="band">
-    <h2>Questions before you buy?</h2>
-    <p>Email us at <a href="mailto:{B['email']}">{B['email']}</a> and we will reply {B['response']}.
-       Full contact details are on our <a href="contact.html">Contact page</a>.</p>
+    <div class="grid grid-2">
+      <div class="card">
+        {icon('mail')}
+        <h3>Questions before you buy?</h3>
+        <p>Email us at <a href="mailto:{B['email']}">{B['email']}</a> and we will reply
+           {B['response']}. Full contact details are on our
+           <a href="contact.html">Contact page</a>.</p>
+      </div>
+      <div class="card">
+        {icon('lock')}
+        <h3>Your payment details stay private</h3>
+        <p>Checkout is handled entirely by our payment gateway partner. We receive only
+           confirmation that a payment succeeded, never your card or banking credentials.</p>
+      </div>
+    </div>
   </section>
 </main>""")
 
@@ -172,7 +310,8 @@ PAGES["index.html"] = ("Home",
 PAGES["about.html"] = ("About Us",
   f"About {B['name']} &mdash; who we are and what we sell.",
   page_hero("About Us", f"Who we are and what we sell.") + f"""
-<main class="wrap prose">
+<main class="wrap">
+<div class="prose">
 <h2>About {B['name']}</h2>
 <p>{B['name']} is a digital products business based in India. We create and sell practical toolkits
    for independent creators, freelancers and small business owners who market themselves online.</p>
@@ -199,32 +338,42 @@ PAGES["about.html"] = ("About Us",
 <p>For any question about our products, an order, or these policies, write to
    <a href="mailto:{B['email']}">{B['email']}</a>. Our contact details and support hours are listed
    on the <a href="contact.html">Contact page</a>.</p>
+</div>
 </main>""")
 
 # ------------------------------ PRICING ------------------------------------
 PAGES["pricing.html"] = ("Pricing",
   f"Pricing for {B['name']} digital products.",
   page_hero("Pricing", "Simple one-time pricing. No subscriptions, no recurring charges.") + f"""
-<main class="wrap prose">
-<h2>{B['product']}</h2>
-<p class="price big">{P} <span>one-time payment</span></p>
+<main class="wrap">
+<div class="product-card" style="max-width:760px">
+  <div class="pc-head">
+    <span class="tagline-badge">Flagship product</span>
+    <h3 style="font-size:23px">{B['product']}</h3>
+    <div class="price"><span class="amt">{P}</span> <span class="per">one-time payment</span></div>
+    <p class="price-note" style="margin-bottom:0">No subscription. No recurring charge.</p>
+  </div>
+  <div class="pc-body">
+    <h4 style="margin-bottom:14px">What is included</h4>
+    <ul class="check">
+      <li>Editable short-form video templates</li>
+      <li>A library of opening lines and script structures</li>
+      <li>A 90-day content calendar and planning documents</li>
+      <li>Written guides covering production, growth, email and monetisation</li>
+      <li>A quick-start plan for the first week</li>
+    </ul>
+    <h4 style="margin:26px 0 14px">What is not included</h4>
+    <ul class="check cross">
+      <li>No physical goods. Nothing is shipped.</li>
+      <li>No subscription or recurring billing. This is a single one-time payment.</li>
+      <li>No ongoing coaching, consulting or account management.</li>
+      <li>No guarantee of any particular audience growth, income or business result.</li>
+    </ul>
+    <a class="btn" href="{B['checkout']}" style="margin-top:10px">Buy now</a>
+  </div>
+</div>
 
-<h3>What is included</h3>
-<ul>
-  <li>Editable short-form video templates</li>
-  <li>A library of opening lines and script structures</li>
-  <li>A 90-day content calendar and planning documents</li>
-  <li>Written guides covering production, growth, email and monetisation</li>
-  <li>A quick-start plan for the first week</li>
-</ul>
-
-<h3>What is not included</h3>
-<ul>
-  <li>No physical goods. Nothing is shipped.</li>
-  <li>No subscription or recurring billing. This is a single one-time payment.</li>
-  <li>No ongoing coaching, consulting or account management.</li>
-  <li>No guarantee of any particular audience growth, income or business result.</li>
-</ul>
+<div class="prose" style="margin-top:56px">
 
 <h3>Taxes</h3>
 <p>The price shown above is the total amount payable. Any applicable taxes are included in the
@@ -240,20 +389,22 @@ PAGES["pricing.html"] = ("Pricing",
 <p>Delivery is immediate and digital. See our <a href="delivery.html">Delivery Policy</a> for full
    details, and our <a href="refunds.html">Refund &amp; Cancellation Policy</a> before purchasing.</p>
 
-<p><a class="btn" href="{B['checkout']}">Buy now</a></p>
+</div>
 </main>""")
 
 # ------------------------------ CONTACT ------------------------------------
 PAGES["contact.html"] = ("Contact Us",
   f"Contact {B['name']} &mdash; email, address and support hours.",
   page_hero("Contact Us", "We reply to every message. Email is the fastest way to reach us.") + f"""
-<main class="wrap prose">
-<div class="contact-card solo">
+<main class="wrap">
+<div class="contact-card">
+  {icon('mail')}
   <h3>Email us</h3>
   <p class="contact-email"><a href="mailto:{B['email']}">{B['email']}</a></p>
   <p class="small">We respond {B['response']}, {B['hours']}.</p>
 </div>
 
+<div class="prose">
 <h2>Support hours</h2>
 <p>{B['hours']}. Messages received outside these hours are answered on the next working day.</p>
 
@@ -266,6 +417,7 @@ PAGES["contact.html"] = ("Contact Us",
    If it is not there, email us at <a href="mailto:{B['email']}">{B['email']}</a> and we will resend
    it. If you were unable to access your purchase because of a fault on our side, see our
    <a href="refunds.html">Refund &amp; Cancellation Policy</a>.</p>
+</div>
 </main>""")
 
 # ----------------------------- DELIVERY ------------------------------------
@@ -465,6 +617,7 @@ def build():
             footer_nav=link_list(NAV, filename),
             footer_policies=link_list(FOOTER_POLICIES, filename),
             tagline=B["tagline"], email=B["email"], year=2026,
+            cta=(CTA_HTML if filename in CTA_PAGES else ""),
         )
         with open(os.path.join(here, filename), "w") as f:
             f.write(html)
