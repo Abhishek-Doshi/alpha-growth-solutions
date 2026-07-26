@@ -101,13 +101,16 @@ strong{color:var(--ink-2);font-weight:650}
   font-weight:750;font-size:16.5px;color:var(--ink);letter-spacing:-.022em;
 }
 .brand:hover{color:var(--ink)}
-.brand-mark{
-  width:32px;height:32px;border-radius:9px;background:var(--grad);
-  display:grid;place-items:center;flex:0 0 auto;
-  box-shadow:0 3px 9px rgba(37,99,235,.32);
+/* AGS badge — black chip, white type. The inverted variant is REQUIRED on the
+   dark footer, where a near-black chip would otherwise disappear. */
+.ags-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  font-family:"Sora",Inter,system-ui,sans-serif;
+  font-weight:800;font-size:17px;letter-spacing:.02em;line-height:1;
+  background:var(--ink);color:#fff;
+  height:34px;padding:0 12px;border-radius:9px;flex:0 0 auto;
 }
-.brand-mark svg{width:21px;height:21px;display:block}
-.brand-word{font-weight:800;font-size:18px;letter-spacing:.01em;color:var(--ink)}
+.ags-badge.inv{background:#fff;color:var(--ink)}
 
 .nav{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .nav a{
