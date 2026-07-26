@@ -6,11 +6,15 @@ Edit BUSINESS below, then run:  python3 build.py
 Regenerates every .html page from one source of truth.
 """
 import os, hashlib
+import landing
 
 # ---------------------------------------------------------------------------
 # THE ONLY BLOCK YOU NEED TO EDIT
 # Anything still wrapped in [[ ]] must be replaced before submitting for review.
 # ---------------------------------------------------------------------------
+# Paste the Meta pixel ID here once the ad account is assigned; leave "" to omit.
+META_PIXEL_ID = ""
+
 BUSINESS = {
     "name":        "Alpha Growth Solutions",
     "tagline":     "Digital toolkits for independent creators and small businesses.",
@@ -618,6 +622,34 @@ def asset_version(path):
         return hashlib.md5(fh.read()).hexdigest()[:8]
 
 
+def pixel_snippet():
+    if not META_PIXEL_ID:
+        return "<!-- Meta pixel not configured; set META_PIXEL_ID in build.py -->"
+    return (
+        "<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?"
+        "n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;"
+        "n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;"
+        "t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}"
+        "(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');"
+        f"fbq('init','{META_PIXEL_ID}');fbq('track','PageView');</script>"
+        f'<noscript><img height="1" width="1" style="display:none" '
+        f'src="https://www.facebook.com/tr?id={META_PIXEL_ID}&ev=PageView&noscript=1"></noscript>'
+    )
+
+
+def build_landing(here, cssver):
+    body = landing.render_body(B, P).replace("{check}", check_svg())
+    html = landing.LANDING_LAYOUT.format(
+        name=B["name"], product=B["product"], price=P, checkout=B["checkout"],
+        desc=("Editable faceless video templates, a hook library, a 90-day content calendar "
+              "and step-by-step guides. One-time payment, instant email delivery."),
+        cssver=cssver, pixel=pixel_snippet(), body=body,
+    )
+    with open(os.path.join(here, landing.LANDING_FILE), "w") as fh:
+        fh.write(html)
+    print("wrote", landing.LANDING_FILE)
+
+
 def build():
     here = os.path.dirname(os.path.abspath(__file__))
     cssver = asset_version(os.path.join(here, "assets", "styles.css"))
@@ -634,6 +666,7 @@ def build():
         with open(os.path.join(here, filename), "w") as f:
             f.write(html)
         print("wrote", filename)
+    build_landing(here, cssver)
 
 
 if __name__ == "__main__":
